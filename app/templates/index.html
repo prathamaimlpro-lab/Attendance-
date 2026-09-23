@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<section class="tile tile--light">
+  <p class="type-tagline tile__eyebrow">Phase 1 · Foundation</p>
+  <h1 class="type-display-lg">Pixel Attendance</h1>
+  <p class="type-lead tile__subcopy">
+    A clean, secure foundation for college attendance management.
+  </p>
+  <div class="row tile__actions">
+    <a class="btn btn-store-hero" href="{{ url_for('core.design_system') }}">View design system</a>
+    <a class="btn btn-secondary-pill" href="#whats-included">What's included</a>
+  </div>
+</section>
+
+<section class="tile tile--parchment" id="whats-included">
+  <div class="content-narrow">
+    <h2 class="type-display-md">What's included in this foundation</h2>
+    <p class="type-body">
+      Flask application shell, SQLite database foundation, and a complete design
+      system built from the approved design tokens.
+    </p>
+    <div class="grid-cards">
+      <div class="card-utility">
+        <h3 class="type-tagline">App shell</h3>
+        <p class="type-body">Factory pattern, config, error pages, security headers.</p>
+      </div>
+      <div class="card-utility">
+        <h3 class="type-tagline">Database</h3>
+        <p class="type-body">SQLite with foreign keys, WAL, and safe transactions.</p>
+      </div>
+      <div class="card-utility">
+        <h3 class="type-tagline">Design system</h3>
+        <p class="type-body">Tokens, components, responsive layouts, accessibility.</p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

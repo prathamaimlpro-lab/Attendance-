@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% from "components/macros.html" import alert, badge, icon %}
+{% block title %}Design System{% endblock %}
+{% block content %}
+<div class="page-container content-narrow">
+  <h1 class="type-display-lg">Design System</h1>
+  <p class="type-body">
+    Development reference for the Phase 1 design system, built from the approved
+    design tokens. This page can be removed or converted to documentation later.
+  </p>
+
+  <hr class="divider">
+
+  <section class="section" id="typography">
+    <h2 class="type-display-md section__title">Typography</h2>
+    <div class="stack">
+      <p class="type-hero-display">Hero display · 56 / 600</p>
+      <p class="type-display-lg">Display large · 40 / 600</p>
+      <p class="type-display-md">Display medium · 34 / 600</p>
+      <p class="type-lead">Lead · 28 / 400</p>
+      <p class="type-lead-airy">Lead airy · 24 / 300</p>
+      <p class="type-tagline">Tagline · 21 / 600</p>
+      <p class="type-body-strong">Body strong · 17 / 600</p>
+      <p class="type-body">Body · 17 / 400. The quick brown fox jumps over the lazy dog.</p>
+      <p class="type-caption">Caption · 14 / 400</p>
+      <p class="type-caption-strong">Caption strong · 14 / 600</p>
+      <p class="type-fine-print">Fine print · 12 / 400</p>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section class="section" id="colors">
+    <h2 class="type-display-md section__title">Colors</h2>
+    <div class="grid-cards">
+      {% for name, hex in colors %}
+      <div class="swatch">
+        <span class="swatch__color" style="background: var(--color-{{ name }})"></span>
+        <span class="swatch__name">{{ name }}</span>
+        <span class="swatch__value">{{ hex }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section class="section" id="buttons">
+    <h2 class="type-display-md section__title">Buttons</h2>
+    <div class="row">
+      <button class="btn btn-primary" type="button">Primary</button>
+      <button class="btn btn-secondary-pill" type="button">Secondary pill</button>
+      <button class="btn btn-dark-utility" type="button">Dark utility</button>
+      <button class="btn btn-pearl-capsule" type="button">Pearl capsule</button>
+      <button class="btn btn-store-hero" type="button">Store hero</button>
+      <button class="btn btn-primary" type="button" disabled>Disabled</button>
+      <a class="btn text-link" href="#">Text link</a>
+    </div>
+    <div class="tile tile--dark" style="padding:24px; border-radius: var(--radius-lg);">
+      <a class="btn text-link--on-dark" href="#">Text link on dark</a>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section class="section" id="inputs">
+    <h2 class="type-display-md section__title">Inputs &amp; Forms</h2>
+    <p class="type-caption">Demo only — not wired to a server yet.</p>
+    <form class="stack" aria-describedby="form-note">
+      <div class="field">
+        <label class="field__label" for="demo-name">Full name</label>
+        <input class="input-text" id="demo-name" name="name" type="text" autocomplete="name">
+        <p class="field__help">As it appears on your ID.</p>
+      </div>
+      <div class="field">
+        <label class="field__label" for="demo-email">Email</label>
+        <input class="input-text" id="demo-email" name="email" type="email" autocomplete="email">
+      </div>
+      <div class="field">
+        <label class="field__label" for="demo-class">Class</label>
+        <select class="input-select" id="demo-class" name="class">
+          <option>Choose a class…</option>
+          <option>IT-A</option>
+          <option>IT-B</option>
+        </select>
+      </div>
+      <div class="field field--error">
+        <label class="field__label" for="demo-code">Class code</label>
+        <input class="input-text" id="demo-code" name="code" type="text"
+               aria-invalid="true" aria-describedby="demo-code-error">
+        <p class="field__error" id="demo-code-error">
+          {{ icon('error') }} <span>Enter a valid 4-digit code.</span>
+        </p>
+      </div>
+      <div class="field">
+        <label class="field__label" for="demo-notes">Notes</label>
+        <textarea class="input-textarea" id="demo-notes" name="notes"></textarea>
+      </div>
+      <div class="row">
+        <button class="btn btn-primary" type="button">Submit</button>
+        <button class="btn btn-secondary-pill" type="button">Reset</button>
+      </div>
+      <p class="type-caption" id="form-note">Buttons are type="button" so the demo doesn't navigate.</p>
+    </form>
+  </section>
+
+  <hr class="divider">
+
+  <section class="section" id="cards">
+    <h2 class="type-display-md section__title">Cards &amp; Tiles</h2>
+    <div class="grid-cards">
+      <div class="card-utility">
+        <h3 class="type-tagline">Utility card</h3>
+        <p class="type-body">White card, hairline border, 18px radius, 24px padding.</p>
+        <a class="btn text-link" href="#">Learn more</a>
+      </div>
+      <div class="card-utility">
+        <h3 class="type-tagline">Another card</h3>
+        <p class="type-body">Used for admin grids in later phases.</p>
+      </div>
+    </div>
+    <div class="tile tile--light" style="border:1px solid var(--color-hairline); border-radius: var(--radius-lg); padding: 48px 24px; margin-top: var(--space-lg);">
+      <h3 class="type-display-lg">Light tile</h3>
+      <p class="type-lead">Full-bleed section surface</p>
+    </div>
+    <div class="tile tile--dark" style="border-radius: var(--radius-lg); padding: 48px 24px; margin-top: var(--space-lg);">
+      <h3 class="type-display-lg">Dark tile</h3>
+      <p class="type-lead">Alternating rhythm surface</p>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section class="section" id="badges">
+    <h2 class="type-display-md section__title">Badges</h2>
+    <div class="row">
+      {{ badge('Neutral', 'neutral') }}
+      {{ badge('Primary', 'primary') }}
+      {{ badge('Dark', 'dark') }}
+      {{ badge('Parchment', 'parchment') }}
+      {{ badge('Selected', 'selected') }}
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section class="section" id="alerts">
+    <h2 class="type-display-md section__title">Alerts</h2>
+    <div class="stack">
+      {{ alert('info', 'Information', 'A neutral message using the primary accent.') }}
+      {{ alert('success', 'Success', 'The action completed.') }}
+      {{ alert('warning', 'Warning', 'Double-check before continuing.') }}
+      {{ alert('error', 'Error', 'Something went wrong. Try again.') }}
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section class="section" id="table">
+    <h2 class="type-display-md section__title">Table</h2>
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr><th scope="col">Student</th><th scope="col">Class</th><th scope="col">Status</th></tr>
+        </thead>
+        <tbody>

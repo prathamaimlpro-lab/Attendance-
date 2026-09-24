@@ -1,0 +1,82 @@
+{% extends "base_admin.html" %}
+{% from "components/macros.html" import badge %}
+
+{% block title %}{{ student.full_name }}{% endblock %}
+{% block admin_title %}Student profile{% endblock %}
+
+{% block admin_content %}
+<div class="detail-grid">
+  <section class="card-utility" aria-labelledby="profile-heading">
+    <div class="detail-head">
+      <h2 id="profile-heading" class="type-tagline">{{ student.full_name }}</h2>
+      {% if user.status == 'active' %}{{ badge('Active', 'primary') }}{% else %}{{ badge('Disabled', 'dark') }}{% endif %}
+    </div>
+
+    <dl class="detail-list">
+      <div><dt>Student ID</dt><dd>{{ student.student_code }}</dd></div>
+      <div><dt>Username</dt><dd>{{ username }}</dd></div>
+      <div><dt>Email</dt><dd>{{ student.email or '—' }}</dd></div>
+      <div><dt>Roll number</dt><dd>{{ student.roll_number or '—' }}</dd></div>
+      <div><dt>Role</dt><dd>Student</dd></div>
+      <div><dt>Account created</dt><dd>{{ created_date }}</dd></div>
+    </dl>
+    <p class="type-caption detail-note">The password is stored as a secure hash and is never displayed.</p>
+
+    <div class="row detail-actions">
+      <a class="btn btn-dark-utility" href="{{ url_for('admin.student_edit', student_id=student.id) }}">Edit</a>
+      <a class="btn btn-secondary-pill" href="{{ url_for('admin.student_reset_password', student_id=student.id) }}">Reset password</a>
+      {% if user.status == 'active' %}
+      <form method="post" action="{{ url_for('admin.student_set_status', student_id=student.id) }}"
+            data-confirm="Disable this account? The student will no longer be able to log in.">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="status" value="disabled">
+        <button class="btn btn-dark-utility" type="submit">Disable account</button>
+      </form>
+      {% else %}
+      <form method="post" action="{{ url_for('admin.student_set_status', student_id=student.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="status" value="active">
+        <button class="btn btn-primary" type="submit">Enable account</button>
+      </form>
+      {% endif %}
+    </div>
+  </section>
+
+  <section class="card-utility" aria-labelledby="enroll-heading">
+    <h2 id="enroll-heading" class="type-tagline">Class enrollment</h2>
+    {% if enrollments %}
+    <ul class="enroll-list">
+      {% for item in enrollments %}
+      <li>
+        <span>{{ item.class_name }}
+          <span class="type-caption">since {{ item.enrolled_at or '—' }}</span>
+        </span>
+        <form method="post"
+              action="{{ url_for('admin.student_unenroll', student_id=student.id, enrollment_id=item.enrollment_id) }}"
+              data-confirm="Remove this student from {{ item.class_name }}?">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button class="btn btn-pearl-capsule" type="submit">Remove</button>
+        </form>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="type-body">Not enrolled in any class.</p>
+    {% endif %}
+
+    {% if available_classes %}
+    <form method="post" action="{{ url_for('admin.student_enroll', student_id=student.id) }}" class="enroll-form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label class="sr-only" for="enroll-class">Class</label>
+      <select class="input-select" id="enroll-class" name="class_id" required>
+        <option value="">Choose class…</option>
+        {% for cls in available_classes %}
+        <option value="{{ cls.id }}">{{ cls.name }} ({{ cls.class_code }})</option>
+        {% endfor %}
+      </select>
+      <button class="btn btn-primary" type="submit">Enroll</button>
+    </form>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

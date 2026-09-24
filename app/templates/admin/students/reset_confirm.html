@@ -1,0 +1,15 @@
+{% extends "base_admin.html" %}
+{% block title %}Reset password{% endblock %}
+{% block admin_title %}Reset password{% endblock %}
+{% block admin_content %}
+<div class="card-utility form-card">
+  <h2 class="type-tagline">Reset password for {{ student.full_name }}?</h2>
+  <p class="type-body">This generates a new temporary password and invalidates the current one.
+     The temporary password is shown once and is never stored in plain text.</p>
+  <form method="post" class="row">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <button class="btn btn-primary" type="submit">Reset password</button>
+    <a class="btn btn-secondary-pill" href="{{ url_for('admin.student_detail', student_id=student.id) }}">Cancel</a>
+  </form>
+</div>
+{% endblock %}

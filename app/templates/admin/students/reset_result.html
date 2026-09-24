@@ -1,0 +1,18 @@
+{% extends "base_admin.html" %}
+{% block title %}Temporary password{% endblock %}
+{% block admin_title %}Temporary password{% endblock %}
+{% block admin_content %}
+<div class="card-utility form-card">
+  <h2 class="type-tagline">Temporary password for {{ student.full_name }}</h2>
+  <div class="alert alert--warning" role="alert">
+    <span class="alert__content">
+      <p class="alert__message">Shown only once. Share it securely and ask the student to change it
+      after logging in. It is not stored anywhere in plain text.</p>
+    </span>
+  </div>
+  <p class="code-display" aria-label="Temporary password">{{ temp_password }}</p>
+  <div class="row">
+    <a class="btn btn-primary" href="{{ url_for('admin.student_detail', student_id=student.id) }}">Back to profile</a>
+  </div>
+</div>
+{% endblock %}

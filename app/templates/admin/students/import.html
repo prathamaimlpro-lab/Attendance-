@@ -1,0 +1,32 @@
+{% extends "base_admin.html" %}
+{% block title %}Import students{% endblock %}
+{% block admin_title %}CSV import{% endblock %}
+{% block admin_content %}
+<div class="card-utility form-card">
+  <h2 class="type-tagline">Import students from CSV</h2>
+  <p class="type-body">Required columns: <code>student_id, name, email, roll_number, class</code>.
+     Optional: <code>username</code>. Accounts are created with a temporary password shown once after import.</p>
+  <p class="type-caption">Maximum 1 MB and 1000 rows. Files are read in memory only and never executed.</p>
+
+  {% if fatal %}
+  <div class="alert alert--error" role="alert">
+    <span class="alert__content">
+      <p class="alert__title">Import rejected</p>
+      <p class="alert__message">{{ fatal }}</p>
+    </span>
+  </div>
+  {% endif %}
+
+  <form method="post" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="field">
+      <label class="field__label" for="csv-file">CSV file</label>
+      <input class="input-file" type="file" id="csv-file" name="csv_file" accept=".csv,text/csv" required>
+    </div>
+    <div class="row">
+      <button class="btn btn-primary" type="submit">Import</button>
+      <a class="btn text-link" href="{{ url_for('admin.import_template') }}">Download CSV template</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

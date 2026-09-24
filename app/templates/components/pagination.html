@@ -1,0 +1,17 @@
+{# Reusable pagination (Phase 3). `filters` is a dict of current filter
+   values; None values are omitted by url_for automatically. #}
+{% macro render_pagination(pag, endpoint, filters) %}
+{% if pag.pages > 1 %}
+<nav class="pagination" aria-label="Pagination">
+  <span class="pagination__info type-caption">Page {{ pag.page }} of {{ pag.pages }} · {{ pag.total }} results</span>
+  <span class="pagination__links">
+    {% if pag.has_prev %}
+    <a class="btn btn-pearl-capsule" href="{{ url_for(endpoint, page=pag.prev_num, **filters) }}">Previous</a>
+    {% endif %}
+    {% if pag.has_next %}
+    <a class="btn btn-pearl-capsule" href="{{ url_for(endpoint, page=pag.next_num, **filters) }}">Next</a>
+    {% endif %}
+  </span>
+</nav>
+{% endif %}
+{% endmacro %}

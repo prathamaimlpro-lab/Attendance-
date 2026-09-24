@@ -1,0 +1,47 @@
+{% extends "base_admin.html" %}
+{% from "components/macros.html" import badge %}
+
+{% block title %}Classes{% endblock %}
+{% block admin_title %}Classes{% endblock %}
+{% block admin_actions %}
+<a class="btn btn-primary" href="{{ url_for('admin.class_new') }}">New class</a>
+{% endblock %}
+
+{% block admin_content %}
+<div class="tab-row">
+  <a class="btn {{ 'btn-dark-utility' if status == 'active' else 'btn-pearl-capsule' }}"
+     href="{{ url_for('admin.classes_list', status='active') }}">Active</a>
+  <a class="btn {{ 'btn-dark-utility' if status == 'archived' else 'btn-pearl-capsule' }}"
+     href="{{ url_for('admin.classes_list', status='archived') }}">Archived</a>
+</div>
+
+{% if classes %}
+<div class="table-wrap">
+  <table class="table admin-table">
+    <caption class="sr-only">Classes</caption>
+    <thead>
+      <tr><th scope="col">Name</th><th scope="col">Code</th><th scope="col">Enrolled</th><th scope="col">Status</th></tr>
+    </thead>
+    <tbody>
+      {% for cls in classes %}
+      <tr>
+        <td data-label="Name"><a href="{{ url_for('admin.class_detail', class_id=cls.id) }}">{{ cls.name }}</a></td>
+        <td data-label="Code">{{ cls.class_code }}</td>
+        <td data-label="Enrolled">{{ counts.get(cls.id, 0) }}</td>
+        <td data-label="Status">
+          {% if cls.status == 'active' %}{{ badge('Active', 'primary') }}{% else %}{{ badge('Archived', 'dark') }}{% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="state">
+  <span class="state__icon">{{ icon('empty', 'icon icon--lg') }}</span>
+  <h2 class="state__title">No {{ status }} classes</h2>
+  <p class="state__body">{% if status == 'active' %}Create your first class to begin enrolling students.{% else %}Archived classes will appear here.{% endif %}</p>
+  {% if status == 'active' %}<a class="btn btn-primary" href="{{ url_for('admin.class_new') }}">New class</a>{% endif %}
+</div>
+{% endif %}
+{% endblock %}

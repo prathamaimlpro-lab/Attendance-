@@ -1,0 +1,73 @@
+{% extends "base_admin.html" %}
+{% block title %}{{ 'Edit student' if mode == 'edit' else 'New student' }}{% endblock %}
+{% block admin_title %}{{ 'Edit student' if mode == 'edit' else 'New student' }}{% endblock %}
+
+{% block admin_content %}
+<div class="card-utility form-card">
+  <form method="post" novalidate>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    {% if mode == 'create' %}
+    <div class="form-grid">
+      <div class="field">
+        <label class="field__label" for="f-username">Username</label>
+        <input class="input-text" id="f-username" name="username"
+               value="{{ form.get('username', '') }}" required autocomplete="off">
+        <p class="field__help">3–32 characters: lowercase letters, numbers, underscores.</p>
+      </div>
+      <div class="field">
+        <label class="field__label" for="f-code">Student ID</label>
+        <input class="input-text" id="f-code" name="student_code"
+               value="{{ form.get('student_code', '') }}" required>
+        <p class="field__help">Example: 24IT037. Cannot be changed later.</p>
+      </div>
+    </div>
+    {% else %}
+    <div class="form-grid">
+      <div class="field">
+        <span class="field__label">Username</span>
+        <p class="type-body">{{ username }}</p>
+      </div>
+      <div class="field">
+        <span class="field__label">Student ID</span>
+        <p class="type-body">{{ student.student_code }}</p>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="field">
+      <label class="field__label" for="f-name">Full name</label>
+      <input class="input-text" id="f-name" name="full_name"
+             value="{{ form.get('full_name', '') }}" required maxlength="100">
+    </div>
+
+    <div class="form-grid">
+      <div class="field">
+        <label class="field__label" for="f-email">Email <span class="field__optional">(optional)</span></label>
+        <input class="input-text" id="f-email" name="email" type="email"
+               value="{{ form.get('email', '') }}" maxlength="254">
+      </div>
+      <div class="field">
+        <label class="field__label" for="f-roll">Roll number <span class="field__optional">(optional)</span></label>
+        <input class="input-text" id="f-roll" name="roll_number"
+               value="{{ form.get('roll_number', '') }}" maxlength="30">
+      </div>
+    </div>
+
+    {% if mode == 'create' %}
+    <div class="field">
+      <label class="field__label" for="f-password">Initial password</label>
+      <input class="input-text" id="f-password" name="password" type="password"
+             required minlength="8" autocomplete="new-password">
+      <p class="field__help">8–64 characters. Stored as a secure hash, never in plain text.</p>
+    </div>
+    {% endif %}
+
+    <div class="row">
+      <button class="btn btn-primary" type="submit">{{ 'Create student' if mode == 'create' else 'Save changes' }}</button>
+      <a class="btn btn-secondary-pill"
+         href="{{ url_for('admin.student_detail', student_id=student.id) if mode == 'edit' else url_for('admin.students_list') }}">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

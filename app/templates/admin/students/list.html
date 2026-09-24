@@ -1,0 +1,119 @@
+{% extends "base_admin.html" %}
+{% from "components/pagination.html" import render_pagination %}
+{% from "components/macros.html" import badge, icon %}
+
+{% block title %}Students{% endblock %}
+{% block admin_title %}Students{% endblock %}
+{% block admin_actions %}
+<a class="btn btn-primary" href="{{ url_for('admin.student_new') }}">New student</a>
+{% endblock %}
+
+{% block admin_content %}
+<form class="filter-bar" method="get" action="{{ url_for('admin.students_list') }}" role="search" aria-label="Filter students">
+  <div class="filter-bar__field filter-bar__field--grow">
+    <label class="sr-only" for="filter-q">Search students</label>
+    <input class="input-text" type="search" id="filter-q" name="q" value="{{ q }}"
+           placeholder="Search name, student ID, username, or email">
+  </div>
+  <div class="filter-bar__field">
+    <label class="sr-only" for="filter-status">Account status</label>
+    <select class="input-select" id="filter-status" name="status">
+      <option value="">All statuses</option>
+      <option value="active" {{ 'selected' if status == 'active' }}>Active</option>
+      <option value="disabled" {{ 'selected' if status == 'disabled' }}>Disabled</option>
+    </select>
+  </div>
+  <div class="filter-bar__field">
+    <label class="sr-only" for="filter-class">Class</label>
+    <select class="input-select" id="filter-class" name="class_id">
+      <option value="">All classes</option>
+      {% for cls in classes %}
+      <option value="{{ cls.id }}" {{ 'selected' if class_id == cls.id }}>{{ cls.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <button class="btn btn-dark-utility" type="submit">Filter</button>
+  {% if q or status or class_id %}
+  <a class="btn text-link" href="{{ url_for('admin.students_list') }}">Clear</a>
+  {% endif %}
+</form>
+
+{% if pagination.total == 0 and not (q or status or class_id) %}
+<div class="state">
+  <span class="state__icon">{{ icon('empty', 'icon icon--lg') }}</span>
+  <h2 class="state__title">No students yet</h2>
+  <p class="state__body">Create your first student or import a CSV file.</p>
+  <div class="row">
+    <a class="btn btn-primary" href="{{ url_for('admin.student_new') }}">New student</a>
+    <a class="btn btn-secondary-pill" href="{{ url_for('admin.import_form') }}">CSV import</a>
+  </div>
+</div>
+{% elif pagination.total == 0 %}
+<div class="state">
+  <span class="state__icon">{{ icon('search', 'icon icon--lg') }}</span>
+  <h2 class="state__title">No matching students</h2>
+  <p class="state__body">Try a different search or clear the filters.</p>
+  <a class="btn btn-secondary-pill" href="{{ url_for('admin.students_list') }}">Clear filters</a>
+</div>
+{% else %}
+<form method="post" action="{{ url_for('admin.students_bulk') }}"
+      data-confirm="Apply this bulk action to the selected students?">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div class="table-wrap">
+    <table class="table admin-table">
+      <caption class="sr-only">Students list</caption>
+      <thead>
+        <tr>
+          <th scope="col"><label class="sr-only" for="select-all">Select all</label>
+            <input type="checkbox" id="select-all"></th>
+          <th scope="col">Name</th>
+          <th scope="col">Student ID</th>
+          <th scope="col">Username</th>
+          <th scope="col">Email</th>
+          <th scope="col">Classes</th>
+          <th scope="col">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for student, username, ustatus in pagination.items %}
+        <tr>
+          <td data-label="Select">
+            <input type="checkbox" name="student_ids" value="{{ student.id }}"
+                   aria-label="Select {{ student.full_name }}">
+          </td>
+          <td data-label="Name">
+            <a href="{{ url_for('admin.student_detail', student_id=student.id) }}">{{ student.full_name }}</a>
+          </td>
+          <td data-label="Student ID">{{ student.student_code }}</td>
+          <td data-label="Username">{{ username }}</td>
+          <td data-label="Email">{{ student.email or '—' }}</td>
+          <td data-label="Classes">{{ (enrollment_names.get(student.id) or []) | join(', ') or '—' }}</td>
+          <td data-label="Status">
+            {% if ustatus == 'active' %}{{ badge('Active', 'primary') }}{% else %}{{ badge('Disabled', 'dark') }}{% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="bulk-bar">
+    <label class="sr-only" for="bulk-action">Bulk action</label>
+    <select class="input-select" id="bulk-action" name="action">
+      <option value="enable">Enable selected</option>
+      <option value="disable">Disable selected</option>
+      <option value="enroll">Enroll selected in class…</option>
+      <option value="unenroll">Remove selected from class…</option>
+    </select>
+    <label class="sr-only" for="bulk-class">Target class</label>
+    <select class="input-select" id="bulk-class" name="target_class_id">
+      <option value="">Class…</option>
+      {% for cls in classes %}<option value="{{ cls.id }}">{{ cls.name }}</option>{% endfor %}
+    </select>
+    <button class="btn btn-dark-utility" type="submit">Apply</button>
+  </div>
+</form>
+
+{{ render_pagination(pagination, 'admin.students_list', filters) }}
+{% endif %}
+{% endblock %}

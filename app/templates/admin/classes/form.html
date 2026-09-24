@@ -1,0 +1,31 @@
+{% extends "base_admin.html" %}
+{% block title %}{{ 'Edit class' if mode == 'edit' else 'New class' }}{% endblock %}
+{% block admin_title %}{{ 'Edit class' if mode == 'edit' else 'New class' }}{% endblock %}
+{% block admin_content %}
+<div class="card-utility form-card">
+  <form method="post" novalidate>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="field">
+      <label class="field__label" for="f-name">Class name</label>
+      <input class="input-text" id="f-name" name="name" value="{{ form.get('name', '') }}" required maxlength="60">
+    </div>
+    {% if mode == 'create' %}
+    <div class="field">
+      <label class="field__label" for="f-code">Class code</label>
+      <input class="input-text" id="f-code" name="class_code" value="{{ form.get('class_code', '') }}" required>
+      <p class="field__help">2–20 characters (letters, numbers, hyphens). Cannot be changed later.</p>
+    </div>
+    {% else %}
+    <div class="field">
+      <span class="field__label">Class code</span>
+      <p class="type-body">{{ cls.class_code }}</p>
+    </div>
+    {% endif %}
+    <div class="row">
+      <button class="btn btn-primary" type="submit">{{ 'Create class' if mode == 'create' else 'Save changes' }}</button>
+      <a class="btn btn-secondary-pill"
+         href="{{ url_for('admin.class_detail', class_id=cls.id) if mode == 'edit' else url_for('admin.classes_list') }}">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends "base_admin.html" %}
+{% from "components/macros.html" import badge %}
+
+{% block title %}Import results{% endblock %}
+{% block admin_title %}Import results{% endblock %}
+
+{% block admin_content %}
+<h2 class="type-display-md">Import report — {{ filename }}</h2>
+
+{% if report.fatal %}
+<div class="alert alert--error" role="alert">
+  <span class="alert__content"><p class="alert__message">{{ report.fatal }}</p></span>
+</div>
+{% endif %}
+
+<div class="report-summary">
+  <div class="card-utility"><span class="type-display-lg">{{ report.total }}</span><span class="type-caption">Total rows</span></div>
+  <div class="card-utility"><span class="type-display-lg">{{ report.created }}</span><span class="type-caption">Created</span></div>
+  <div class="card-utility"><span class="type-display-lg">{{ report.duplicates }}</span><span class="type-caption">Duplicates</span></div>
+  <div class="card-utility"><span class="type-display-lg">{{ report.invalid }}</span><span class="type-caption">Invalid</span></div>
+  <div class="card-utility"><span class="type-display-lg">{{ report.skipped }}</span><span class="type-caption">Skipped</span></div>
+</div>
+
+{% if report.issues %}
+<h3 class="type-tagline spaced-top">Rows not imported</h3>
+<div class="table-wrap">
+  <table class="table admin-table">
+    <thead>
+      <tr><th scope="col">Line</th><th scope="col">Student ID</th><th scope="col">Status</th><th scope="col">Reasons</th></tr>
+    </thead>
+    <tbody>
+      {% for issue in report.issues %}
+      <tr>
+        <td data-label="Line">{{ issue.line }}</td>
+        <td data-label="Student ID">{{ issue.student_id or '—' }}</td>
+        <td data-label="Status">{{ badge(issue.status, 'dark' if issue.status == 'duplicate' else 'neutral') }}</td>
+        <td data-label="Reasons">{{ issue.reasons | join('; ') }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+
+{% if report.credentials %}
+<h3 class="type-tagline spaced-top">Temporary passwords (shown once)</h3>
+<div class="alert alert--warning" role="alert">
+  <span class="alert__content">
+    <p class="alert__message">Download or copy these now. They are never shown or stored again.</p>
+  </span>
+</div>
+<div class="table-wrap">
+  <table class="table admin-table">
+    <thead>
+      <tr><th scope="col">Student ID</th><th scope="col">Username</th><th scope="col">Temporary password</th></tr>
+    </thead>
+    <tbody>
+      {% for cred in report.credentials %}
+      <tr>
+        <td data-label="Student ID">{{ cred.student_code }}</td>
+        <td data-label="Username">{{ cred.username }}</td>
+        <td data-label="Temporary password"><code>{{ cred.temp_password }}</code></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<script type="application/json" id="credentials-data">{{ report.credentials | tojson }}</script>
+<button class="btn btn-dark-utility spaced-top" type="button" id="download-credentials">Download credentials CSV</button>
+{% endif %}
+
+<div class="row spaced-top">
+  <a class="btn btn-primary" href="{{ url_for('admin.students_list') }}">Back to students</a>
+  <a class="btn btn-secondary-pill" href="{{ url_for('admin.import_form') }}">Import another file</a>
+</div>
+{% endblock %}
